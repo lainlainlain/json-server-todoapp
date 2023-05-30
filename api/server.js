@@ -1,10 +1,9 @@
 // See https://github.com/typicode/json-server#module
 const jsonServer = require('json-server');
-const cors = require('cors');
 const server = jsonServer.create();
 const router = jsonServer.router('db.json');
 const middlewares = jsonServer.defaults();
-jsonServer.defaults({ noCors: true });
+const cors = require('cors');
 
 server.use(middlewares);
 // Add this before server.use(router)
@@ -15,7 +14,15 @@ server.use(
   }),
 );
 server.use(router);
-server.use(cors());
+server.use(
+  cors({
+    origin: true,
+    credentials: true,
+    preflightContinue: false,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  }),
+);
+server.options('*', cors());
 server.listen(3000, () => {
   console.log('JSON Server is running');
 });
